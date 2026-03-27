@@ -1,0 +1,60 @@
+<div class="medicine-container">
+
+  <!-- Header -->
+  <h2>Medicine Management</h2>
+
+  <!-- Search Section -->
+  <div class="search-box">
+    <input
+      type="text"
+      [(ngModel)]="searchText"
+      placeholder="Search medicine by name..."
+    />
+
+    <button (click)="search()">Search</button>
+    <button (click)="loadMedicines()">Reset</button>
+  </div>
+
+  <!-- Medicines Table -->
+  @if (filteredMedicines && filteredMedicines.length > 0) {
+
+    <table class="medicine-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Manufacturer</th>
+        <th>Price</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+
+      <tbody>
+        @for (med of filteredMedicines; track med.id) {
+          <tr>
+            <td>{{ med.id }}</td>
+            <td>{{ med.name }}</td>
+            <td>{{ med.manufacturer }}</td>
+            <td>{{ med.price | currency }}</td>
+            <td>{{ med.description || 'N/A' }}</td>
+            <td>
+              <button (click)="deleteMedicine(med.id)">
+                Delete
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+  } @else {
+
+    <!-- Empty State -->
+    <div class="empty-state">
+      No medicines found.
+    </div>
+
+  }
+
+</div>
