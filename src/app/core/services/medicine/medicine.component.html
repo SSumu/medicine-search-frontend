@@ -3,7 +3,7 @@
   <!-- Header -->
   <h2>Medicine Management</h2>
 
-  <!-- Search Section -->
+  <!-- ================= SEARCH SECTION ================= -->
   <div class="search-box">
     <input
       type="text"
@@ -13,9 +13,44 @@
 
     <button (click)="search()">Search</button>
     <button (click)="loadMedicines()">Reset</button>
+    <button (click)="refreshMedicines()">Refresh</button>
   </div>
 
-  <!-- Medicines Table -->
+  <!-- ================= ADD MEDICINE ================= -->
+  <div class="form-box">
+    <h3>Add Medicine</h3>
+
+    <input [(ngModel)]="newMedicine.name" placeholder="Name" />
+    <input [(ngModel)]="newMedicine.manufacturer" placeholder="Manufacturer" />
+    <input type="number" [(ngModel)]="newMedicine.price" placeholder="Price" />
+    <input [(ngModel)]="newMedicine.description" placeholder="Description" />
+
+    <button (click)="addMedicine()">Add</button>
+  </div>
+
+  <!-- ================= GET MEDICINE BY ID ================= -->
+  <div class="form-box">
+    <h3>Get Medicine By ID</h3>
+
+    <input #medId type="number" placeholder="Enter ID" />
+    <button (click)="getMedicineById(+medId.value)">Fetch</button>
+  </div>
+
+  <!-- ================= UPDATE MEDICINE ================= -->
+  @if (selectedMedicine) {
+    <div class="form-box">
+      <h3>Update Medicine</h3>
+
+      <input [(ngModel)]="selectedMedicine.name" placeholder="Name" />
+      <input [(ngModel)]="selectedMedicine.manufacturer" placeholder="Manufacturer" />
+      <input type="number" [(ngModel)]="selectedMedicine.price" placeholder="Price" />
+      <input [(ngModel)]="selectedMedicine.description" placeholder="Description" />
+
+      <button (click)="updateMedicine()">Update</button>
+    </div>
+  }
+
+  <!-- ================= MEDICINES TABLE ================= -->
   @if (filteredMedicines && filteredMedicines.length > 0) {
 
     <table class="medicine-table">

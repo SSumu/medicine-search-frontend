@@ -17,6 +17,16 @@ export class MedicineComponent implements OnInit {
   filteredMedicines: Medicine[] = [];
   searchText: string = '';
 
+  selectedMedicine: Medicine | null = null;
+
+  newMedicine: Medicine = {
+    id: 0,
+    name: '',
+    manufacturer: '',
+    price: 0,
+    description: '',
+  };
+
   constructor(private medicineService: MedicineService) {}
 
   ngOnInit(): void {
@@ -36,6 +46,60 @@ export class MedicineComponent implements OnInit {
         console.error('Error loading medicines:', err);
         this.medicines = [];
         this.filteredMedicines = [];
+      },
+    });
+  }
+
+  // =====================================================
+  // GET MEDICINE BY ID
+  // =====================================================
+  getMedicineById(id: number): void {
+    this.medicineService.getMedicineById(id).subscribe({
+      next: (data: Medicine) => {
+        this.selectedMedicine = data;
+      },
+      error: (err) => {
+        console.error('Error fetching medicine by ID:', err);
+      },
+    });
+  }
+
+  // =====================================================
+  // ADD MEDICINE
+  // =====================================================
+  addMedicine(): void {
+    this.medicineService.addMedicine(this.newMedicine).subscribe({
+      next: () => {
+        this.loadMedicines();
+
+        // Reset form
+        this.newMedicine = {
+          id: 0,
+          name: '',
+          manufacturer: '',
+          price: 0,
+          description: '',
+        };
+      },
+      error: (err) => {
+        console.error('Add error:', err);
+      },
+    });
+  }
+
+  // =====================================================
+  // UPDATE MEDICINE
+  // =====================================================
+  updateMedicine(): void {
+    if (!this.selectedMedicine || !this.selectedMedicine.id) return;
+
+    this.medicineService.updateMedicine(this.selectedMedicine.id, this.selectedMedicine).subscribe({
+      next: () => {
+        this.loadMedicines();
+        this.selectedMedicine = null;
+      },
+      error: (err) => {
+        console.error('Update error:', err);
       },
     });
   }
@@ -72,6 +136,21 @@ export class MedicineComponent implements OnInit {
       },
       error: (err) => {
         console.error('Delete error:', err);
+      },
+    });
+  }
+
+  // =====================================================
+  // REFRESH MEDICINES
+  // =====================================================
+  refreshMedicines(): void {
+    this.medicineService.refreshMedicines().subscribe({
+      next: (data: Medicine[]) => {
+        this.medicines = data ?? [];
+        this.filteredMedicines = data ?? [];
+      },
+      error: (err) => {
+        console.error('Refresh error:', err);
       },
     });
   }

@@ -11,25 +11,29 @@ export interface Medicine {
   description?: string;
 }
 
-// ✅ Single correct base URL
+// =====================
+// API CONFIG (FIXED)
+// =====================
 const API_CONFIG = {
-  BASE_URL: 'http://localhost:8080/api/medicines',
+  BASE_URL:
+    (window as any)['env']?.API_URL || 'https://medicine-search-backend-production.up.railway.app',
 };
 
 @Injectable({
   providedIn: 'root',
 })
 export class MedicineService {
-  // ✅ FIX: do NOT append /medicines again
-  private BASE_URL = API_CONFIG.BASE_URL;
+
+  // Base endpoint
+  private apiURL = `${API_CONFIG.BASE_URL}/api/medicines`;
 
   constructor(private http: HttpClient) {}
 
   // =====================
-  // GET ALL
+  // GET ALL MEDICINES
   // =====================
   getAllMedicines(): Observable<Medicine[]> {
-    return this.http.get<any>(this.BASE_URL).pipe(
+    return this.http.get<any>(this.apiURL).pipe(
       map((res) => {
         if (Array.isArray(res)) return res;
         if (res?.data) return res.data;
@@ -40,38 +44,38 @@ export class MedicineService {
   }
 
   // =====================
-  // GET BY ID
+  // GET MEDICINE BY ID
   // =====================
   getMedicineById(id: number): Observable<Medicine> {
-    return this.http.get<Medicine>(`${this.BASE_URL}/${id}`);
+    return this.http.get<Medicine>(`${this.apiURL}/${id}`);
   }
 
   // =====================
   // ADD
   // =====================
   addMedicine(medicine: Medicine): Observable<Medicine> {
-    return this.http.post<Medicine>(this.BASE_URL, medicine);
+    return this.http.post<Medicine>(this.apiURL, medicine);
   }
 
   // =====================
   // UPDATE
   // =====================
   updateMedicine(id: number, medicine: Medicine): Observable<Medicine> {
-    return this.http.put<Medicine>(`${this.BASE_URL}/${id}`, medicine);
+    return this.http.put<Medicine>(`${this.apiURL}/${id}`, medicine);
   }
 
   // =====================
   // DELETE
   // =====================
   deleteMedicine(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.BASE_URL}/${id}`);
+    return this.http.delete<void>(`${this.apiURL}/${id}`);
   }
 
   // =====================
   // SEARCH
   // =====================
   searchMedicines(keyword: string): Observable<Medicine[]> {
-    const url = `${this.BASE_URL}/search?keyword=${encodeURIComponent(keyword)}`;
+    const url = `${this.apiURL}/search?keyword=${encodeURIComponent(keyword)}`;
 
     return this.http.get<any>(url).pipe(
       map((res) => {
